@@ -190,6 +190,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "ipykernel" },
+    { name = "ipython" },
     { name = "langchain" },
     { name = "langgraph" },
 ]
@@ -197,6 +198,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "ipykernel", specifier = ">=7.0.1" },
+    { name = "ipython", specifier = ">=9.6.0" },
     { name = "langchain", specifier = ">=1.0.2" },
     { name = "langgraph", specifier = ">=1.0.1" },
 ]
