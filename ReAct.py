@@ -4,7 +4,7 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import BaseMessage,ToolMessage,SystemMessage
 from langgraph.graph import StateGraph, END, START
 from dotenv import load_dotenv
-from langgraph.graph.messages import add_messages
+from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 from langchain_core.tools import tool
 import os 
@@ -13,14 +13,23 @@ load_dotenv()
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], add_messages]
-
-llm=ChatGroq(model="qwen/qwen3-32b",api_key=os.getenv("GROQ_API_KEY"))
-
 @tool
 def add(a: int, b:int):
     """This is an addition function that adds 2 numbers together"""
     return a+b
-tools= [add]
+
+@tool
+def subtract(a: int, b:int):
+    """This is an subtraction function that subtracts 2 numbers"""
+    return a-b
+
+@tool
+def multiply(a: int, b:int):
+    """This is an multiplication function that multiplies 2 numbers together"""
+    return a*b
+
+
+tools= [add, subtract, multiply]
 model=ChatGroq(model="qwen/qwen3-32b",api_key=os.getenv("GROQ_API_KEY")).bind_tools(tools)
 
 def model_call(state:AgentState)->AgentState:
@@ -63,4 +72,7 @@ def print_stream(stream):
         if isinstance(message, tuple):
             print(message)
         else:
-            message.preety_print()
+            message.pretty_print()
+
+inputs={"messages":[("user", "Add 40 + 12, then subtract 5-7 and multiply 4 *6")]}
+print_stream(app.stream(inputs,stream_mode="values"))
